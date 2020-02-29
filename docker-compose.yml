@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  pingodown:
+    image: qmcgaw/pingodown
+    container_name: pingodown
+    ports:
+      - 8000:8000/udp
+    environment:
+      - LISTEN_ADDRESS=0.0.0.0:8000
+      - SERVER_ADDRESS=
+      - TZ=America/Montreal
+    restart: always
