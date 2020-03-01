@@ -21,7 +21,7 @@ type Connection interface {
 // Information maintained for each client/server connection
 type connection struct {
 	clientAddress *net.UDPAddr
-	server        *net.UDPConn
+	server        UDPConn
 	bufferSize    int
 	inboundDelay  time.Duration
 	outboundDelay time.Duration
@@ -30,7 +30,7 @@ type connection struct {
 
 // Generate a new connection by opening a UDP connection to the server
 func NewConnection(serverAddress, clientAddress *net.UDPAddr, bufferSize int) (Connection, error) {
-	server, err := net.DialUDP("udp", nil, serverAddress)
+	server, err := NewUDPConn(serverAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (c *connection) PingApproximatesTo(d time.Duration) bool {
 	c.RLock()
 	ping := c.inboundDelay + c.outboundDelay
 	c.RUnlock()
-	const approximationRange = 5 * time.Millisecond
+	const approximationRange = 8 * time.Millisecond
 	return d > ping-approximationRange/2 && d < ping+approximationRange/2
 }
 
@@ -126,7 +126,7 @@ func (c *connection) WriteToServerWithDelay(ctx context.Context, data []byte) er
 	return writeToServerWithDelay(ctx, c.getInboundDelay(), c.server, data)
 }
 
-func writeToServerWithDelay(ctx context.Context, delay time.Duration, server *net.UDPConn, data []byte) (err error) {
+func writeToServerWithDelay(ctx context.Context, delay time.Duration, server UDPConn, data []byte) (err error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	timer := time.AfterFunc(delay, func() {
@@ -150,7 +150,7 @@ func writeToClientWithDelay(ctx context.Context, delay time.Duration, proxy *net
 	return err
 }
 
-func writeToClient(proxy *net.UDPConn, client *net.UDPAddr, data []byte) error {
+func writeToClient(proxy UDPConn, client *net.UDPAddr, data []byte) error {
 	bytesWritten, err := proxy.WriteToUDP(data, client)
 	if err != nil {
 		return err
@@ -160,7 +160,7 @@ func writeToClient(proxy *net.UDPConn, client *net.UDPAddr, data []byte) error {
 	return nil
 }
 
-func writeToServer(server *net.UDPConn, data []byte) error {
+func writeToServer(server UDPConn, data []byte) error {
 	n, err := server.Write(data)
 	if err != nil {
 		return err
