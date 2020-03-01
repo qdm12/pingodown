@@ -17,4 +17,4 @@ install:
   - docker buildx create --name xbuilder --use
 script: travis_wait 60 bash ci.sh
 after_success:
-  - curl -X POST https://hooks.microbadger.com/images/$DOCKER_REPO/WEBHOOK_LINK || exit 0
+  - curl -X POST https://hooks.microbadger.com/images/$DOCKER_REPO/VSiisjnU01V1EnSMQrs_jfSx2uM= || exit 0
