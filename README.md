@@ -2,7 +2,9 @@
 
 *Sets the same ping to all players on a UDP proxy - in **testing***
 
-[![pingodown](https://github.com/qdm12/pingodown/raw/master/title.png)](https://hub.docker.com/r/qmcgaw/pingodown)
+<a href="https://hub.docker.com/r/qmcgaw/pingodown">
+    <img width="100%" height="320" src="https://raw.githubusercontent.com/qdm12/pingodown/master/title.svg?sanitize=true">
+</a>
 
 [![Build Status](https://travis-ci.org/qdm12/pingodown.svg?branch=master)](https://travis-ci.org/qdm12/pingodown)
 [![Docker Pulls](https://img.shields.io/docker/pulls/qmcgaw/pingodown.svg)](https://hub.docker.com/r/qmcgaw/pingodown)
