@@ -10,8 +10,7 @@ import (
 )
 
 type State interface {
-	// GetClientIPAddresses() (clientAddresses []*net.IPAddr)
-	GetClientAddresses() (clientAddresses []net.UDPAddr)
+	GetClientAddresses() (clientAddresses []*net.UDPAddr)
 	// SetConnection sets a connection in the state and returns the saved connection or the
 	// already existing connection as it does not overwrite an existing connection
 	SetConnection(conn connection.Connection) connection.Connection
@@ -38,7 +37,7 @@ func NewState() State {
 	}
 }
 
-func (s *state) GetClientAddresses() (clientAddresses []net.UDPAddr) {
+func (s *state) GetClientAddresses() (clientAddresses []*net.UDPAddr) {
 	s.connectionsMutex.RLock()
 	defer s.connectionsMutex.RUnlock()
 	for _, conn := range s.connections {
@@ -61,7 +60,7 @@ func (s *state) GetConnection(clientAddress *net.UDPAddr) (conn connection.Conne
 func (s *state) SetConnection(conn connection.Connection) connection.Connection {
 	s.connectionsMutex.Lock()
 	defer s.connectionsMutex.Unlock()
-	key := conn.GetClientAddress()
+	key := conn.GetClientUDPAddress().String()
 	if conn, ok := s.connections[key]; ok { // in case it still got created
 		return conn
 	}

@@ -48,62 +48,9 @@ func NewProxy(listenAddress, serverAddress string, logger logging.Logger) (Proxy
 	return p, nil
 }
 
-func (p *proxy) Close() error {
-	return p.proxyConn.Close()
-}
-
 type clientPacket struct {
 	clientAddress *net.UDPAddr
 	data          []byte
-}
-
-func pingClients(pinger ping.Pinger, state state.State, logger logging.Logger) {
-	for _, address := range state.GetClientAddresses() {
-		address := address
-		latency, err := pinger.GetLatency(&address)
-		if err != nil {
-			logger.Error(err)
-			continue
-		}
-		state.SetLatency(&address, latency)
-	}
-}
-
-func updatePings(state state.State, logger logging.Logger) {
-	highestLatency := state.GetHighestLatency()
-	for _, address := range state.GetClientAddresses() {
-		address := address
-		conn, err := state.GetConnection(&address)
-		if err != nil {
-			logger.Error(err)
-			continue
-		}
-		currentLatency, err := state.GetLatency(&address)
-		if err != nil {
-			logger.Error(err)
-			continue
-		}
-		ping := highestLatency - currentLatency
-		if !conn.PingApproximatesTo(ping) {
-			logger.Info("Setting new ping of %s to %dms", conn.GetClientAddress(), ping.Milliseconds())
-			conn.SetPing(ping) // works by pointer
-		}
-	}
-}
-
-func updatePingPeriodically(ctx context.Context, period time.Duration,
-	pinger ping.Pinger, state state.State, logger logging.Logger) {
-	ticker := time.NewTicker(period)
-	for {
-		select {
-		case <-ticker.C:
-			pingClients(pinger, state, logger)
-			updatePings(state, logger)
-		case <-ctx.Done():
-			ticker.Stop()
-			return
-		}
-	}
 }
 
 func (p *proxy) Run(ctx context.Context) (err error) {
@@ -129,14 +76,15 @@ func (p *proxy) Run(ctx context.Context) (err error) {
 				conn = p.state.SetConnection(conn)
 				go conn.ForwardServerToClient(ctx, p.proxyConn, p.logger)
 			}
-			go func() {
+			go func() { // TODO replace with time.AfterFunc
 				if err := conn.WriteToServerWithDelay(ctx, packet.data); err != nil {
 					p.logger.Error(err)
 				}
 			}()
 		case <-ctx.Done():
 			p.logger.Info("context canceled, closing proxy connection")
-			return p.Close()
+			// TODO close server connections
+			return p.proxyConn.Close()
 		}
 	}
 }

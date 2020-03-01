@@ -11,8 +11,7 @@ import (
 )
 
 type Connection interface {
-	GetClientAddress() string
-	GetClientUDPAddress() net.UDPAddr
+	GetClientUDPAddress() *net.UDPAddr
 	ForwardServerToClient(ctx context.Context, proxy *net.UDPConn, logger logging.Logger)
 	WriteToServerWithDelay(ctx context.Context, data []byte) error
 	SetPing(ping time.Duration)
@@ -61,6 +60,9 @@ func (c *connection) getOutboundDelay() time.Duration {
 func (c *connection) SetPing(ping time.Duration) {
 	c.Lock()
 	defer c.Unlock()
+	if ping < 0 { // cannot go faster than the connection
+		ping = 0
+	}
 	c.inboundDelay = ping / 2
 	c.outboundDelay = ping / 2
 }
@@ -73,12 +75,8 @@ func (c *connection) PingApproximatesTo(d time.Duration) bool {
 	return d > ping-approximationRange/2 && d < ping+approximationRange/2
 }
 
-func (c *connection) GetClientAddress() string {
-	return c.clientAddress.String()
-}
-
-func (c *connection) GetClientUDPAddress() net.UDPAddr {
-	return *c.clientAddress
+func (c *connection) GetClientUDPAddress() *net.UDPAddr {
+	return c.clientAddress
 }
 
 func (c *connection) ForwardServerToClient(ctx context.Context, proxy *net.UDPConn, logger logging.Logger) {
