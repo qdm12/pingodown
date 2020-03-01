@@ -26,7 +26,8 @@ As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote thi
 - UDP Proxy server for clients of a game server with extra ping options
 - Forces the highest latency of the server clients to all the clients
 - Uses ICMP to find the round trip from the server to each of the connected clients
-- Compatible with `amd64`, `386`, `arm64` and `arm32v7` (Raspberry Pis) CPU architectures.
+- Tiny 7.3MB Docker image (uncompressed)
+- Compatible with `amd64`, `386`, `arm64`, `arm32v7`, `arm32v6` and `ppc64le` CPU architectures
 - [Docker image tags and sizes](https://hub.docker.com/repository/docker/qmcgaw/pingodown/tags)
 - Runs without root as user `1000` although the binary has raw network access in order to ping the clients to obtain their latency every 10 seconds.
 
