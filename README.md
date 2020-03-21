@@ -1,6 +1,6 @@
 # PingODown
 
-*Sets the same ping to all players on a UDP proxy - in **testing***
+*Adds extra latency to all players on a UDP proxy*
 
 <a href="https://hub.docker.com/r/qmcgaw/pingodown">
     <img width="100%" height="320" src="https://raw.githubusercontent.com/qdm12/pingodown/master/title.svg?sanitize=true">
@@ -21,7 +21,9 @@
 
 I have a home server hosting a [shooting game server](https://github.com/qdm12/cod4-docker) but my friends are in America and Europe, and they all have different 'ping' to the server.
 
-As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote this UDP proxy program which induces latency to all the players such that all the players have the same ping, wherever they are.
+As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote this UDP proxy program which induces latency
+to all the players such that players physically near the server can have extra latency, to give equal chances
+to far away players.
 
 ## Features
 
@@ -30,8 +32,8 @@ As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote thi
 - Uses ICMP to find the round trip from the server to each of the connected clients
 - Tiny 7.3MB Docker image (uncompressed)
 - Compatible with `amd64`, `386`, `arm64`, `arm32v7` and `arm32v6` CPU architectures
-- [Docker image tags and sizes](https://hub.docker.com/repository/docker/qmcgaw/pingodown/tags)
-- Runs without root as user `1000` although the binary has raw network access in order to ping the clients to obtain their latency every 10 seconds.
+- [Docker image tags and sizes](https://hub.docker.com/r/docker/qmcgaw/pingodown/tags)
+- Runs without root as user `1000`
 
 ## Setup
 
@@ -54,8 +56,9 @@ As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote thi
 | Environment variable | Default | Possible values | Description |
 | --- | --- | --- | --- |
 | `SERVER_ADDRESS` |  | hostname:port | The server to proxy packets to, i.e. `myiporhost:9009` |
+| `LISTEN_ADDRESS` | `:8000` | Listening proxy address |
+| `PING` | `100ms` | Artificial ping added for each connection |
 | `TZ` | `America/Montreal` | *string* | Timezone, for your logs timestampts essentially |
-| `LISTEN_ADDRESS` | `8000` | Integer from 1 to 65535 | Internal listening port, you should use Docker port mapping instead of changing this variable |
 
 ## Development
 
@@ -70,9 +73,9 @@ As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote thi
 
 ## TODOs
 
-- [ ] Random ping variation, for extra fun
-- [ ] Docker tag without raw network access (using `sudo sysctl -w net.ipv4.ping_group_range="0   2147483647"`)
-- [ ] Sliders in web UI to change the ping for each client
+- [ ] Web UI
+    - Ping per player slider
+    - Random ping variation, for extra fun
 - [ ] Unit testing
 - [ ] Integration testing with 2 udp clients and 1 udp server (a lot of work sadly)
 

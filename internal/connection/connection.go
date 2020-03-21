@@ -15,7 +15,6 @@ type Connection interface {
 	ForwardServerToClient(ctx context.Context, proxy *net.UDPConn, logger logging.Logger)
 	WriteToServerWithDelay(ctx context.Context, data []byte) error
 	SetPing(ping time.Duration)
-	PingApproximatesTo(d time.Duration) bool
 }
 
 // Information maintained for each client/server connection
@@ -65,14 +64,6 @@ func (c *connection) SetPing(ping time.Duration) {
 	}
 	c.inboundDelay = ping / 2
 	c.outboundDelay = ping / 2
-}
-
-func (c *connection) PingApproximatesTo(d time.Duration) bool {
-	c.RLock()
-	ping := c.inboundDelay + c.outboundDelay
-	c.RUnlock()
-	const approximationRange = 8 * time.Millisecond
-	return d > ping-approximationRange/2 && d < ping+approximationRange/2
 }
 
 func (c *connection) GetClientUDPAddress() *net.UDPAddr {

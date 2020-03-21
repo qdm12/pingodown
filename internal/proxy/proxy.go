@@ -7,7 +7,6 @@ import (
 
 	"github.com/qdm12/golibs/logging"
 	"github.com/qdm12/pingodown/internal/connection"
-	"github.com/qdm12/pingodown/internal/ping"
 	"github.com/qdm12/pingodown/internal/state"
 )
 
@@ -21,16 +20,16 @@ type proxy struct {
 	serverAddress *net.UDPAddr
 	state         state.State
 	logger        logging.Logger
-	pinger        ping.Pinger
+	defaultPing   time.Duration
 }
 
-func NewProxy(listenAddress, serverAddress string, logger logging.Logger) (Proxy, error) {
+func NewProxy(listenAddress, serverAddress string, logger logging.Logger, defaultPing time.Duration) (Proxy, error) {
 	state := state.NewState()
 	p := &proxy{
-		bufferSize: 65535,
-		state:      state,
-		logger:     logger,
-		pinger:     ping.NewPinger(),
+		bufferSize:  65535,
+		state:       state,
+		logger:      logger,
+		defaultPing: defaultPing,
 	}
 	var err error
 	proxyAddress, err := net.ResolveUDPAddr("udp", listenAddress)
@@ -56,7 +55,7 @@ type clientPacket struct {
 func (p *proxy) Run(ctx context.Context) (err error) {
 	p.logger.Info("Running proxy to %s on %s", p.serverAddress, p.proxyConn.LocalAddr())
 	packets := make(chan clientPacket, 100)
-	go updatePingPeriodically(ctx, 10*time.Second, p.pinger, p.state, p.logger)
+	// go updatePingPeriodically(ctx, 10*time.Second, p.pinger, p.state, p.logger)
 	go func() {
 		if err := readFromClients(p.proxyConn, packets, p.bufferSize); err != nil {
 			p.logger.Error(err)
@@ -73,6 +72,7 @@ func (p *proxy) Run(ctx context.Context) (err error) {
 					p.logger.Error(err)
 					continue
 				}
+				conn.SetPing(p.defaultPing)
 				conn = p.state.SetConnection(conn)
 				go conn.ForwardServerToClient(ctx, p.proxyConn, p.logger)
 			}

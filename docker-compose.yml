@@ -8,5 +8,6 @@ services:
     environment:
       - LISTEN_ADDRESS=0.0.0.0:8000
       - SERVER_ADDRESS=
+      - PING=100ms
       - TZ=America/Montreal
     restart: always

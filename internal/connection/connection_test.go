@@ -67,48 +67,6 @@ func Test_SetPing(t *testing.T) {
 	}
 }
 
-func Test_PingApproximatesTo(t *testing.T) {
-	t.Parallel()
-	const inboundDelay, outboundDelay = 100 * time.Millisecond, 100 * time.Millisecond
-	tests := map[string]struct {
-		d            time.Duration
-		approximates bool
-	}{
-		"same ping": {
-			d:            200 * time.Millisecond,
-			approximates: true,
-		},
-		"minus 3ms": {
-			d:            197 * time.Millisecond,
-			approximates: true,
-		},
-		"plus 3ms": {
-			d:            203 * time.Millisecond,
-			approximates: true,
-		},
-		"plus 10ms": {
-			d:            210 * time.Millisecond,
-			approximates: false,
-		},
-		"minus 10ms": {
-			d:            190 * time.Millisecond,
-			approximates: false,
-		},
-	}
-	for name, tc := range tests {
-		tc := tc
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-			c := &connection{
-				inboundDelay:  inboundDelay,
-				outboundDelay: outboundDelay,
-			}
-			approximates := c.PingApproximatesTo(tc.d)
-			assert.Equal(t, tc.approximates, approximates)
-		})
-	}
-}
-
 func Test_GetClientUDPAddress(t *testing.T) {
 	t.Parallel()
 	udpAddress := &net.UDPAddr{

@@ -25,10 +25,15 @@ func main() {
 		logger.Error(err)
 		return
 	}
+	ping, err := envParams.GetDuration("PING", params.Default("100ms"))
+	if err != nil {
+		logger.Error(err)
+		return
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	proxy, err := proxy.NewProxy(listenAddress, serverAddress, logger)
+	proxy, err := proxy.NewProxy(listenAddress, serverAddress, logger, ping)
 	if err != nil {
 		logger.Error(err)
 		return
