@@ -71,6 +71,8 @@ to far away players.
 1. In Visual Studio Code, press on `F1` and select `Remote-Containers: Open Folder in Container...`
 1. Your dev environment is ready to go!... and it's running in a container :+1:
 
+See also [contributing](.github/CONTRIBUTING.md)
+
 ## TODOs
 
 - [ ] Web UI
