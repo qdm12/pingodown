@@ -6,7 +6,7 @@
     <img width="100%" height="320" src="https://raw.githubusercontent.com/qdm12/pingodown/master/title.svg?sanitize=true">
 </a>
 
-[![Build Status](https://travis-ci.org/qdm12/pingodown.svg?branch=master)](https://travis-ci.org/qdm12/pingodown)
+[![Build status](https://github.com/qdm12/pingodown/workflows/Buildx%20latest/badge.svg)](https://github.com/qdm12/pingodown/actions?query=workflow%3A%22Buildx+latest%22)
 [![Docker Pulls](https://img.shields.io/docker/pulls/qmcgaw/pingodown.svg)](https://hub.docker.com/r/qmcgaw/pingodown)
 [![Docker Stars](https://img.shields.io/docker/stars/qmcgaw/pingodown.svg)](https://hub.docker.com/r/qmcgaw/pingodown)
 [![Image size](https://images.microbadger.com/badges/image/qmcgaw/pingodown.svg)](https://microbadger.com/images/qmcgaw/pingodown)
