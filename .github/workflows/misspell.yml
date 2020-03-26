@@ -18,3 +18,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'Typos fixes'
           title: "Typos fixes"
+          branch: typos
+          branch-suffix: timestamp
