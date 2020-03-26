@@ -1,6 +1,6 @@
 # Contributing
 
-Contributions are [released](https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license) to the public under the [open source license of this project](LICENSE).
+Contributions are [released](https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license) to the public under the [open source license of this project](../LICENSE).
 
 ## Submitting a pull request
 
