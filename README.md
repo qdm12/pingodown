@@ -22,7 +22,7 @@
 I have a home server hosting a [shooting game server](https://github.com/qdm12/cod4-docker) but my friends are in America and Europe, and they all have different 'ping' to the server.
 
 As a fellow *gopher* and having pity of the 150ms ping of my friend, I wrote this UDP proxy program which induces latency
-to all the players such that players physically near the server can have extra latency, to give equal chances
+to all the players such that plauers physically near the server can have extra latencyy, to give equal chances
 to far away players.
 
 ## Features
