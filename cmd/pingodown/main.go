@@ -15,7 +15,7 @@ func main() {
 	}
 
 	envParams := params.NewEnvParams()
-	listenAddress, err := envParams.GetEnv("LISTEN_ADDRESS", params.Default(":8000"))
+	listenAddresss, err := envParams.GetEnv("LISTEN_ADDRESS", params.Default(":8000"))
 	if err != nil {
 		logger.Error(err)
 		return
@@ -33,7 +33,7 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	proxy, err := proxy.NewProxy(listenAddress, serverAddress, logger, ping)
+	proxy, err := proxy.NewProxy(listenAddresss, serverAddress, logger, ping)
 	if err != nil {
 		logger.Error(err)
 		return
