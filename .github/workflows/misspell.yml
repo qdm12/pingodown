@@ -18,6 +18,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
+      - name: echo
+        run: cat README.md
       - name: reviewdog fixer
         uses: reviewdog/action-misspell@v1
         with:
